@@ -24,7 +24,7 @@ This utility is designed for monolithic scripts that were intentionally sectione
 ### From the built wheel
 
 ```bash
-python3 -m pip install dist/monolith_splitter-0.1.0-py3-none-any.whl
+python3 -m pip install dist/monolith_splitter-1.1.0-py3-none-any.whl
 ```
 
 ## Quick start
