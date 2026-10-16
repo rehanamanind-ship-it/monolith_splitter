@@ -1,70 +1,78 @@
 # Monolith Splitter
 
-A lightweight utility that splits a large Python source file into section files based on a CSV map.
+Split a large Python file into smaller, organized modules using a CSV-based section map.
 
-## What it does
+This utility is designed for monolithic scripts that were intentionally sectioned with marker comments such as `# ============================================================` and then later need to be rebuilt into separate files.
 
-The tool reads:
-- the source file via `--src`
-- a section map via `--cfg`
-- an output directory via `--out`
+## Why use it
 
-It writes each configured section to its own Python file and can also warn when parts of the source file are not covered by any section.
+- Extract sections from one big file into multiple Python files
+- Keep generated module names predictable
+- Restore import lines that were commented out for splitting
+- Work from the command line in a simple terminal workflow
 
-## Required config format
+## Features
 
-The configuration file is a CSV with three columns:
+- CLI-based usage via `monolith-splitter`
+- CSV config with `SECTION_NAME,START_LINE,END_LINE`
+- Automatic output directory creation
+- Warning output for unassigned ranges
+- Wheel packaging for easy installation
+
+## Installation
+
+### From the built wheel
+
+```bash
+python3 -m pip install dist/monolith_splitter-0.1.0-py3-none-any.whl
+```
+
+## Quick start
+
+```bash
+monolith-splitter --src main.py --cfg inif.csv --out output
+```
+
+This will read the source file, parse the section ranges from the CSV, generate separate files, and save them in the output directory.
+
+## Example config
 
 ```csv
 SECTION_NAME,START_LINE,END_LINE
 MAIN.py,3,12
 UTILITIES,13,37
 DATA_LOADING,38,58
-PREPROCESSING,59,77
 MODEL,78,100
-EVALUATION,101,117
-REPORTING,118,141
-MAIN.py,142,158
 ```
 
-Rules:
-- the first row is a header and is ignored
-- each section must use `SECTION_NAME,START_LINE,END_LINE`
-- `START_LINE` and `END_LINE` must be inclusive line numbers
-- ranges must not overlap
-- line numbers must be at least 1
-- the main file is treated as `main.py` when the section name is `MAIN.py`, `main.py`, `MAIN`, or `main`
+The tool will create files such as:
 
-## How to run
+- `main.py`
+- `UTILITIES.py`
+- `DATA_LOADING.py`
+- `MODEL.py`
 
-From the project root:
+## Command help
 
 ```bash
-python3 monolith_splitter.py --src main.py --cfg inif.csv --out output
+monolith-splitter --help
 ```
 
-Example output:
+## Version
 
 ```bash
-WARNING: Unassigned line ranges:
-Lines 1-2
-Wrote output/DATA_LOADING.py
-Wrote output/EVALUATION.py
-Wrote output/MODEL.py
-Wrote output/PREPROCESSING.py
-Wrote output/REPORTING.py
-Wrote output/UTILITIES.py
+monolith-splitter --version
+```
+
+## Example output
+
+```text
 Wrote output/main.py
+Wrote output/UTILITIES.py
+Wrote output/DATA_LOADING.py
 ```
 
 ## Notes
 
-- If there are gaps between configured sections, the script prints a warning but still writes the requested files.
-- It strips leading commented import lines such as `# import ...` and `# from ...` from each extracted section when creating the split output.
-- This is reliable for the project’s current workflow, but it is best treated as a focused utility script rather than a broad, enterprise-grade refactoring engine.
+The project includes a sample source file and config in the workspace, so you can test it immediately with the included files.
 
-## Files in this project
-
-- source file: [main.py](main.py)
-- config file: [inif.csv](inif.csv)
-- splitter: [monolith_splitter.py](monolith_splitter.py)
