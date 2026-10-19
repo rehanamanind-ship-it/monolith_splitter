@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "monolith-splitter"
+version = "1.1.0"
+description = "Split a monolithic Python file into smaller files using a CSV configuration."
+requires-python = ">=3.9"
+authors = [{ name = "Monolith Splitter" }]
+
+[project.scripts]
+monolith-splitter = "monolith_splitter:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
